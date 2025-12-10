@@ -1,22 +1,31 @@
-from tensorflow.keras.models import Sequential
-from tensorflow.keras.layers import Dense, Dropout, GlobalMaxPooling1D
+from tensorflow.keras.models import Model
+from tensorflow.keras.layers import Input, Dense, Dropout, GlobalMaxPooling1D, Conv1D, Concatenate
 from tensorflow.keras.callbacks import EarlyStopping, ReduceLROnPlateau
-from tensorflow.keras.layers import Conv1D, GlobalMaxPooling1D
 
 def initCNN():
-    model = Sequential()
+    # Input 1: Text Data
+    input_text = Input(shape=(50, 100), name='text_input')
+    y = Conv1D(filters=64, kernel_size=3, activation='relu')(input_text)
+    y = GlobalMaxPooling1D()(y)
 
-    model.add(Conv1D(filters=64, kernel_size=3, activation='relu'))
-    model.add(GlobalMaxPooling1D())
-    model.add(Dense(8, activation='relu'))
-    model.add(Dropout(0.5))
-    model.add(Dense(1, activation='sigmoid'))
+    # Input 2: Manual Features
+    input_feat = Input(shape=(2,), name='feat_input')
 
+    # Merge
+    combined = Concatenate()([y, input_feat])
+
+    # Dense Layers
+    z = Dense(8, activation='relu')(combined)
+    z = Dropout(0.5)(z)
+    output = Dense(1, activation='sigmoid')(z)
+
+    model = Model(inputs=[input_text, input_feat], outputs=output)
     model.compile(loss='binary_crossentropy', optimizer='adam', metrics=['accuracy'])
     
     return model
 
 def trainCNN(X_train, y_train, X_valid, y_valid, sample_weights):
+    # X_train is expected to be a list: [X_train_text, X_train_feat]
     model = initCNN()
 
     callbacks = [

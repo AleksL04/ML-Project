@@ -30,6 +30,7 @@ def add_embedding(df, word2vec_dict):
     return df
 
 def add_manual_features(df):
+    # Calculate features
     df['quote_count'] = df['text'].astype(str).apply(lambda x: x.count("'") + x.count('"'))
     
     def get_density(text):
@@ -39,23 +40,22 @@ def add_manual_features(df):
         return punct_count / len(text)
     
     df['punct_density'] = df['text'].apply(get_density)
+    
+    # Normalize features (Crucial for Dense layers)
+    # Simple max scaling to keep them roughly 0-1
+    if df['quote_count'].max() > 0:
+        df['quote_count'] = df['quote_count'] / df['quote_count'].max()
+    # punct_density is already a ratio 0-1
+    
     return df
 
 def fix_vector_length(df, max_len=50, vector_size=100):
-    total_vector_size = vector_size + 2
-    X = np.zeros((len(df), max_len, total_vector_size))
-
-    manual_features = df[['quote_count', 'punct_density']].values
+    X = np.zeros((len(df), max_len, vector_size))
 
     for i, seq in enumerate(df['embedding']):
         length = min(len(seq), max_len)
         if length > 0:
-            X[i, :length, :vector_size] = np.array(seq)[:length]
-            
-            current_feats = manual_features[i]
-            X[i, :length, vector_size] = current_feats[0]
-            X[i, :length, vector_size+1] = current_feats[1]
-            
+            X[i, :length, :] = np.array(seq)[:length]
     return X
 
 def process_df(df):
@@ -72,6 +72,10 @@ def process_df(df):
     df = add_embedding(df, word2vec_dict)
     df = add_manual_features(df)
 
-    X = fix_vector_length(df, MAX_LEN, VECTOR_SIZE)
+    # 1. Text Input (3D Array)
+    X_text = fix_vector_length(df, MAX_LEN, VECTOR_SIZE)
+    
+    # 2. Features Input (2D Array)
+    X_feat = df[['quote_count', 'punct_density']].values
 
-    return X
+    return X_text, X_feat

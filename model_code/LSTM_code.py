@@ -1,21 +1,31 @@
-from tensorflow.keras.models import Sequential
-from tensorflow.keras.layers import Bidirectional, LSTM, Dense, Dropout, GlobalMaxPooling1D
+from tensorflow.keras.models import Model
+from tensorflow.keras.layers import Input, Bidirectional, LSTM, Dense, Dropout, GlobalMaxPooling1D, Concatenate
 from tensorflow.keras.callbacks import EarlyStopping, ReduceLROnPlateau
 
 def initLSTM():
-    model = Sequential()
+    # Input 1: Text Data (Sequences)
+    input_text = Input(shape=(50, 100), name='text_input')
+    x = Bidirectional(LSTM(64, return_sequences=True, dropout=0.2))(input_text)
+    x = GlobalMaxPooling1D()(x)
 
-    model.add(Bidirectional(LSTM(64, return_sequences=True, dropout=0.2)))
-    model.add(GlobalMaxPooling1D())
-    model.add(Dense(16, activation='relu')) # Intermediate dense layer
-    model.add(Dropout(0.5))
-    model.add(Dense(1, activation='sigmoid'))
+    # Input 2: Manual Features (Scalars)
+    input_feat = Input(shape=(2,), name='feat_input')
 
+    # Merge: Concatenate the processed text and the manual features
+    combined = Concatenate()([x, input_feat])
+
+    # Dense Layers
+    z = Dense(16, activation='relu')(combined)
+    z = Dropout(0.5)(z)
+    output = Dense(1, activation='sigmoid')(z)
+
+    model = Model(inputs=[input_text, input_feat], outputs=output)
     model.compile(loss='binary_crossentropy', optimizer='adam', metrics=['accuracy'])
 
     return model
 
 def trainLSTM(X_train, y_train, X_valid, y_valid):
+    # X_train is expected to be a list: [X_train_text, X_train_feat]
     model = initLSTM()
     
     callbacks = [
