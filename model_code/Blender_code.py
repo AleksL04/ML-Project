@@ -22,3 +22,5 @@ def trainBlender(X_train, y_train):
     ]
 
     model.fit(X_train, y_train, epochs=100, batch_size=32, verbose=1, callbacks=callbacks)
+
+    return model
