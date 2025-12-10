@@ -47,10 +47,10 @@ def process_df(df):
     MAX_LEN = 50
     VECTOR_SIZE = 100
 
-    train_clean = process_df(df, nlp)
-    train_clean = add_embedding(train_clean, word2vec_dict)
+    df = tokenize_df(df, nlp)
+    df = add_embedding(df, word2vec_dict)
 
-    X = fix_vector_length(train_clean, MAX_LEN, VECTOR_SIZE)
+    X = fix_vector_length(df, MAX_LEN, VECTOR_SIZE)
 
     return X
 
