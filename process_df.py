@@ -1,6 +1,7 @@
 import pandas as pd
 import numpy as np
 import spacy
+import string
 from gensim.models import KeyedVectors
 
 def tokenize_df(df, nlp):
@@ -28,13 +29,33 @@ def add_embedding(df, word2vec_dict):
     df['embedding'] = embedding_list
     return df
 
+def add_manual_features(df):
+    df['quote_count'] = df['text'].astype(str).apply(lambda x: x.count("'") + x.count('"'))
+    
+    def get_density(text):
+        text = str(text)
+        if len(text) == 0: return 0.0
+        punct_count = sum(1 for char in text if char in string.punctuation)
+        return punct_count / len(text)
+    
+    df['punct_density'] = df['text'].apply(get_density)
+    return df
+
 def fix_vector_length(df, max_len=50, vector_size=100):
-    X = np.zeros((len(df), max_len, vector_size))
+    total_vector_size = vector_size + 2
+    X = np.zeros((len(df), max_len, total_vector_size))
+
+    manual_features = df[['quote_count', 'punct_density']].values
 
     for i, seq in enumerate(df['embedding']):
         length = min(len(seq), max_len)
         if length > 0:
-            X[i, :length, :] = np.array(seq)[:length]
+            X[i, :length, :vector_size] = np.array(seq)[:length]
+            
+            current_feats = manual_features[i]
+            X[i, :length, vector_size] = current_feats[0]
+            X[i, :length, vector_size+1] = current_feats[1]
+            
     return X
 
 def process_df(df):
@@ -49,8 +70,8 @@ def process_df(df):
 
     df = tokenize_df(df, nlp)
     df = add_embedding(df, word2vec_dict)
+    df = add_manual_features(df)
 
     X = fix_vector_length(df, MAX_LEN, VECTOR_SIZE)
 
     return X
-
