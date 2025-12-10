@@ -1,7 +1,6 @@
 import pandas as pd
 import numpy as np
 import spacy
-import string
 from gensim.models import KeyedVectors
 
 def tokenize_df(df, nlp):
@@ -29,26 +28,6 @@ def add_embedding(df, word2vec_dict):
     df['embedding'] = embedding_list
     return df
 
-def add_manual_features(df):
-    # Calculate features
-    df['quote_count'] = df['text'].astype(str).apply(lambda x: x.count("'") + x.count('"'))
-    
-    def get_density(text):
-        text = str(text)
-        if len(text) == 0: return 0.0
-        punct_count = sum(1 for char in text if char in string.punctuation)
-        return punct_count / len(text)
-    
-    df['punct_density'] = df['text'].apply(get_density)
-    
-    # Normalize features (Crucial for Dense layers)
-    # Simple max scaling to keep them roughly 0-1
-    if df['quote_count'].max() > 0:
-        df['quote_count'] = df['quote_count'] / df['quote_count'].max()
-    # punct_density is already a ratio 0-1
-    
-    return df
-
 def fix_vector_length(df, max_len=50, vector_size=100):
     X = np.zeros((len(df), max_len, vector_size))
 
@@ -70,12 +49,7 @@ def process_df(df):
 
     df = tokenize_df(df, nlp)
     df = add_embedding(df, word2vec_dict)
-    df = add_manual_features(df)
 
-    # 1. Text Input (3D Array)
-    X_text = fix_vector_length(df, MAX_LEN, VECTOR_SIZE)
-    
-    # 2. Features Input (2D Array)
-    X_feat = df[['quote_count', 'punct_density']].values
+    X = fix_vector_length(df, MAX_LEN, VECTOR_SIZE)
 
-    return X_text, X_feat
+    return X
