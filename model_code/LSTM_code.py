@@ -42,10 +42,8 @@ def train_CV_LSTM(X_train, y_train, X_valid, y_valid):
     X = np.concatenate((X_train, X_valid), axis=0)
 
     y = np.concatenate((y_train, y_valid), axis=0)
-    
-    model = initLSTM()
 
-    model = KerasClassifier(model=model, epochs=10, batch_size=32, verbose=0)
+    model = KerasClassifier(model=initLSTM, epochs=10, batch_size=32, verbose=0)
 
     scores = cross_val_score(model, X, y, cv=5)
 
