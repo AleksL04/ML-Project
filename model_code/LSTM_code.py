@@ -4,15 +4,16 @@ from tensorflow.keras.callbacks import EarlyStopping, ReduceLROnPlateau
 
 from scikeras.wrappers import KerasClassifier
 from sklearn.model_selection import cross_val_score
+from tensorflow.keras.layers import Input
 
 import numpy as np
 
-def initLSTM():
+def initLSTM(input_shape=None):
     model = Sequential()
-
+    model.add(Input(shape=input_shape))
     model.add(Bidirectional(LSTM(64, return_sequences=True, dropout=0.2)))
     model.add(GlobalMaxPooling1D())
-    model.add(Dense(16, activation='relu')) # Intermediate dense layer
+    model.add(Dense(16, activation='relu'))
     model.add(Dropout(0.5))
     model.add(Dense(1, activation='sigmoid'))
 
@@ -43,7 +44,16 @@ def train_CV_LSTM(X_train, y_train, X_valid, y_valid):
 
     y = np.concatenate((y_train, y_valid), axis=0)
 
-    model = KerasClassifier(model=initLSTM, epochs=10, batch_size=32, verbose=0)
+    data_shape = (X.shape[1], X.shape[2])
+
+    model = KerasClassifier(
+        model=initLSTM, 
+        input_shape=data_shape,
+        epochs=10, 
+        batch_size=32, 
+        verbose=0
+    )
+
 
     scores = cross_val_score(model, X, y, cv=5)
 
