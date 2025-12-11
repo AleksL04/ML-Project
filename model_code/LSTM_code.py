@@ -5,6 +5,8 @@ from tensorflow.keras.callbacks import EarlyStopping, ReduceLROnPlateau
 from scikeras.wrappers import KerasClassifier
 from sklearn.model_selection import cross_val_score
 
+import numpy as np
+
 def initLSTM():
     model = Sequential()
 
@@ -37,6 +39,14 @@ def trainLSTM(X_train, y_train, X_valid, y_valid):
     return model
 
 def train_CV_LSTM(X_train, y_train, X_valid, y_valid):
+    X = np.concatenate((X_train, X_valid), axis=0)
+
+    y = np.concatenate((y_train, y_valid), axis=0)
+    
     model = initLSTM()
 
     model = KerasClassifier(model=model, epochs=10, batch_size=32, verbose=0)
+
+    scores = cross_val_score(model, X, y, cv=5)
+
+    print(f"Accuracy: {scores.mean():.2f} (+/- {scores.std():.2f})")
