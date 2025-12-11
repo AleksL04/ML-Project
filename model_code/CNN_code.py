@@ -3,6 +3,9 @@ from tensorflow.keras.layers import Dense, Dropout, GlobalMaxPooling1D
 from tensorflow.keras.callbacks import EarlyStopping, ReduceLROnPlateau
 from tensorflow.keras.layers import Conv1D, GlobalMaxPooling1D
 
+from scikeras.wrappers import KerasClassifier
+from sklearn.model_selection import cross_val_score
+
 def initCNN():
     model = Sequential()
 
@@ -35,3 +38,10 @@ def trainCNN(X_train, y_train, X_valid, y_valid):
     )
 
     return model
+
+def train_CV_CNN(X_train, y_train, X_valid, y_valid):
+    
+    model = initCNN()
+
+    model = KerasClassifier(model=model, epochs=10, batch_size=32, verbose=0)
+
