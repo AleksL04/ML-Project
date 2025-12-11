@@ -16,7 +16,7 @@ def initCNN():
     
     return model
 
-def trainCNN(X_train, y_train, X_valid, y_valid, sample_weights):
+def trainCNN(X_train, y_train, X_valid, y_valid):
     model = initCNN()
 
     callbacks = [
@@ -27,7 +27,6 @@ def trainCNN(X_train, y_train, X_valid, y_valid, sample_weights):
     history = model.fit(
         X_train,
         y_train,
-        sample_weight=sample_weights,
         validation_data=(X_valid, y_valid),
         epochs=20,
         batch_size=32,
