@@ -5,7 +5,7 @@ from sklearn.metrics import accuracy_score, log_loss
 def initBayes():
     return MultinomialNB()
 
-def trainBayes2(train_df, valid_df):
+def trainBayes(train_df, valid_df):
 
     train_texts = train_df["text"].values
     y_train = train_df["label"].values
@@ -14,7 +14,6 @@ def trainBayes2(train_df, valid_df):
     y_valid = valid_df["label"].values
     print("changes")
     vectorizer = TfidfVectorizer(
-        analyzer = "char",
         max_features=5000,
         ngram_range=(1, 2),
         stop_words="english"
