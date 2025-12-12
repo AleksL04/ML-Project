@@ -43,7 +43,9 @@ def predictBayes(model, df, vectorizer):
     text = vectorizer.fit_transform(text)
     preds = model.predict(text)
     acc = accuracy_score(y, preds)
-    probas = model.predict_proba(X)
+    probas = model.predict_proba(text)
 
-    return preds, acc, probas
+    pred = probas[:,1]   # probability of sarcasm (class 1)
+
+    return preds, acc, pred
 
