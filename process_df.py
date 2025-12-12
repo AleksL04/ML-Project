@@ -40,7 +40,7 @@ def fix_vector_length(df, max_len=50, vector_size=100):
 def process_df(df):
     model_path = 'word2vec_model/glove-wiki-gigaword-100.vectors'
     word2vec_dict = KeyedVectors.load(model_path)
-    nlp = spacy.load("en_core_web_sm", disable=["tagger", "parser", "ner", "lemmatizer"])
+    nlp = spacy.load("en_core_web_sm", disable=["tagger", "parser", "ner"])
 
     df = df.copy()
 
