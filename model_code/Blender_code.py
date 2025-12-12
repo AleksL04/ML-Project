@@ -6,7 +6,7 @@ from tensorflow.keras.callbacks import EarlyStopping, ReduceLROnPlateau
 def initBlender():
     model = Sequential()
 
-    model.add(Dense(4,input_dim=2, activation='relu'))
+    model.add(Dense(4,input_dim=3, activation='relu'))
     model.add(Dense(1, activation='sigmoid'))
 
     model.compile(loss='binary_crossentropy', optimizer='adam', metrics=['accuracy'])
