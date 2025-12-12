@@ -44,7 +44,7 @@ def initCNN():
 
 def trainCNN(X_train, y_train, X_valid, y_valid):
     #model = initCNN()
-    model = initTextCNN()
+    model = initTextCNN(30, 100)
 
     callbacks = [
         EarlyStopping(monitor='val_loss', patience=3, restore_best_weights=True),
