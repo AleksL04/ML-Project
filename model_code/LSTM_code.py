@@ -10,7 +10,7 @@ import numpy as np
 
 def initLSTM(input_shape=None):
     model = Sequential()
-    model.add(Input(shape=input_shape))
+    #model.add(Input(shape=input_shape))
     model.add(Bidirectional(LSTM(64, return_sequences=True, dropout=0.2)))
     model.add(GlobalMaxPooling1D())
     model.add(Dense(16, activation='relu'))
