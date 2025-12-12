@@ -44,7 +44,7 @@ def process_df(df):
 
     df = df.copy()
 
-    MAX_LEN = 50
+    MAX_LEN = 30
     VECTOR_SIZE = 100
 
     df = tokenize_df(df, nlp)
