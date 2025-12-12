@@ -35,19 +35,15 @@ def trainBayes(train_df, valid_df):
 
     return model, vectorizer
 
-def predictBayes(model, df):
+def predictBayes(model, df, vectorizer):
 
     text = df["text"].values
     y = df["label"].values
 
-    vectorizer = TfidfVectorizer(
-        max_features=5000,
-        ngram_range=(1, 2),
-        stop_words="english"
-    )
-
     text = vectorizer.fit_transform(text)
     preds = model.predict(text)
     acc = accuracy_score(y, preds)
-    return preds, acc
+    probas = model.predict_proba(X)
+
+    return preds, acc, probas
 
