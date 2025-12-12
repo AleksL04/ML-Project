@@ -2,11 +2,32 @@ from tensorflow.keras.models import Sequential
 from tensorflow.keras.layers import Dense, Dropout, GlobalMaxPooling1D
 from tensorflow.keras.callbacks import EarlyStopping, ReduceLROnPlateau
 from tensorflow.keras.layers import Conv1D, GlobalMaxPooling1D
+from tensorflow.keras.layers import concatenate, Input
+from tensorflow.keras.models import Model
 
 from scikeras.wrappers import KerasClassifier
 from sklearn.model_selection import cross_val_score
 
 import numpy as np
+
+def initTextCNN(length, vocab_size):
+    inputs = Input(shape=(length, vocab_size))
+    
+    # Parallel convolutions
+    conv_blocks = []
+    for kernel_size in [3, 4, 5]:
+        conv = Conv1D(filters=128, kernel_size=kernel_size, activation='relu')(inputs)
+        pool = GlobalMaxPooling1D()(conv)
+        conv_blocks.append(pool)
+    
+    merged = concatenate(conv_blocks)
+    dense = Dense(64, activation='relu')(merged)
+    dropout = Dropout(0.5)(dense)
+    outputs = Dense(1, activation='sigmoid')(dropout)
+    
+    model = Model(inputs=inputs, outputs=outputs)
+    model.compile(loss='binary_crossentropy', optimizer='adam', metrics=['accuracy'])
+    return model
 
 def initCNN():
     model = Sequential()
@@ -22,7 +43,8 @@ def initCNN():
     return model
 
 def trainCNN(X_train, y_train, X_valid, y_valid):
-    model = initCNN()
+    #model = initCNN()
+    model = initTextCNN()
 
     callbacks = [
         EarlyStopping(monitor='val_loss', patience=3, restore_best_weights=True),
