@@ -40,7 +40,7 @@ def predictBayes(model, df, vectorizer):
     text = df["text"].values
     y = df["label"].values
 
-    text = vectorizer.fit_transform(text)
+    text = vectorizer.transform(text)
     preds = model.predict(text)
     acc = accuracy_score(y, preds)
     probas = model.predict_proba(text)
