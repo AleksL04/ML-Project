@@ -15,7 +15,7 @@ def initTextCNN(length, vocab_size):
     
     # Parallel convolutions
     conv_blocks = []
-    for kernel_size in [3, 4, 5]:
+    for kernel_size in [3, 5, 7]:
         conv = Conv1D(filters=128, kernel_size=kernel_size, activation='relu')(inputs)
         pool = GlobalMaxPooling1D()(conv)
         conv_blocks.append(pool)
