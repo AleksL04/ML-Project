@@ -3,8 +3,6 @@ import numpy as np
 import spacy
 from gensim.models import KeyedVectors
 
-MODEL_PATH = "models/spacy_en_model"
-
 def tokenize_df(df, nlp):
     df['text'] = df['text'].str.lower()
     tokens_list = []
