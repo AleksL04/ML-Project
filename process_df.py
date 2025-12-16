@@ -3,6 +3,8 @@ import numpy as np
 import spacy
 from gensim.models import KeyedVectors
 
+MODEL_PATH = "models/spacy_en_model"
+
 def tokenize_df(df, nlp):
     df['text'] = df['text'].str.lower()
     tokens_list = []
@@ -40,7 +42,7 @@ def fix_vector_length(df, max_len=50, vector_size=100):
 def process_df(df):
     model_path = 'models/glove-wiki-gigaword-100.vectors'
     word2vec_dict = KeyedVectors.load(model_path)
-    nlp = spacy.load("en_core_web_sm", disable=["tagger", "parser", "ner"])
+    nlp = spacy.load("models/spacy_en_model", disable=["tagger", "parser", "ner"])
 
     df = df.copy()
 

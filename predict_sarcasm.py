@@ -1,10 +1,20 @@
+import os
+import logging
+import warnings
+
+os.environ['TF_CPP_MIN_LOG_LEVEL'] = '3'
+os.environ['TF_ENABLE_ONEDNN_OPTS'] = '0'
+
+warnings.filterwarnings("ignore")
+
+logging.getLogger('tensorflow').setLevel(logging.ERROR)
+
 import argparse
 import pandas as pd
 from tensorflow.keras.models import load_model
 from xgboost import XGBClassifier
 import numpy as np
 from process_df import process_df
-
 
 def main():
     parser = argparse.ArgumentParser(description="Run sarcasm prediction on a CSV file.")
