@@ -14,7 +14,7 @@ import pandas as pd
 from tensorflow.keras.models import load_model
 from xgboost import XGBClassifier
 import numpy as np
-from process_df import process_df
+from src.process_df import process_df
 
 def main():
     parser = argparse.ArgumentParser(description="Run sarcasm prediction on a CSV file.")
