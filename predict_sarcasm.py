@@ -17,10 +17,10 @@ def main():
     input_path = args.input
     output_path = args.output
 
-    LSTM_model = load_model('saved_models/lstm_model.keras')
-    CNN_model = load_model('saved_models/cnn_model.keras')
+    LSTM_model = load_model('models/lstm_model.keras')
+    CNN_model = load_model('models/cnn_model.keras')
     blender = XGBClassifier() 
-    blender.load_model('saved_models/blender_model.json')
+    blender.load_model('models/blender_model.json')
 
     print(f"Loading data from: {input_path}")
     
