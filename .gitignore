@@ -3,3 +3,4 @@ models/glove-wiki-gigaword-100.vectors
 __pycache__
 .devcontainer
 predictions.csv
+venv123
