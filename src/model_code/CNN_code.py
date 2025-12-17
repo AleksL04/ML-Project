@@ -13,7 +13,6 @@ import numpy as np
 def initTextCNN(length, vocab_size):
     inputs = Input(shape=(length, vocab_size))
     
-    # Parallel convolutions
     conv_blocks = []
     for kernel_size in [3, 5, 7]:
         conv = Conv1D(filters=128, kernel_size=kernel_size, activation='relu')(inputs)
@@ -43,7 +42,6 @@ def initCNN():
     return model
 
 def trainCNN(X_train, y_train, X_valid, y_valid):
-    #model = initCNN()
     model = initTextCNN(30, 100)
 
     callbacks = [
