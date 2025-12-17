@@ -48,6 +48,7 @@ def main():
 
     predictions = blender.predict(X_meta_test)
     input_df['prediction'] = predictions
+    input_df = input_df[['text', 'prediction']]
     input_df.to_csv(output_path, index=False)
     print(f"Predictions saved to: {output_path}")
 
